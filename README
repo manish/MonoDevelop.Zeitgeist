@@ -1,0 +1,15 @@
+MonoDevelop.Zeitgeist is a MonoDevelop Addin to provide datasource support for Zeitgeist
+
+Status
+------
+
+	Early days... [it's not currently working!]
+
+Compiling
+---------
+
+	cd MonoDevelop.Zeitgeist
+	sudo ln -s $PWD/bin/Debug/MonoDevelop.Zeitgeist.dll /usr/local/lib/monodevelop/AddIns/MonoDevelop.Zeitgeist
+
+	Open in project in MonoDevelop, build and restart MonoDevelop.
+	Use Activity Journal to see changes

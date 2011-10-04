@@ -1,0 +1,19 @@
+<Addin id          = "Zeitgeist"
+       namespace   = "MonoDevelop"
+       name        = "Zeitgeist Support"
+       author      = "Patrick McEvoy"
+       copyright   = "MIT X11"
+       url         = "http://github.com/firegrass/"
+       description = "Log activity to Zeitgeist."
+       category    = "Logging"
+       version     = "2.8">
+ 
+	<Dependencies>
+		<Addin id="Core" version="2.8"/>
+		<Addin id="Ide" version="2.8"/>
+	</Dependencies>
+	
+	<Extension path = "/MonoDevelop/Core/FileSystemExtensions">
+		<Class class = "MonoDevelop.Zeitgeist.ZeitgeistFileSystemExtension" />
+	</Extension>
+</Addin>
