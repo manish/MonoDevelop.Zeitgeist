@@ -49,59 +49,14 @@ namespace MonoDevelop.Zeitgeist
 					new List<Event> (){ev});
 				client = new LogClient ();
 			} catch (Exception ex) {
-				MonoDevelop.Core.LoggingService.LogError ("== ZeitgeistFileSystemExtension : Error init", ex);
+				MonoDevelop.Core.LoggingService.LogError ("Error init", ex);
 			}
-		}
-
-		public void SendDocument (Document doc, EventType type)
-		{
-			var eventManifestation = Manifestation.Instance.EventManifestation.UserActivity;
-			var subjectInterpretation = Interpretation.Instance.Document.Document;
-			var subjectManifestation = Manifestation.Instance.FileDataObject.FileDataObject;
-
-			var interpretation = Interpretation.Instance.EventInterpretation.ModifyEvent;
-			switch (type) {
-			case EventType.Access:
-				interpretation = Interpretation.Instance.EventInterpretation.AccessEvent;
-				break;
-			case EventType.Leave:
-				interpretation = Interpretation.Instance.EventInterpretation.LeaveEvent;
-				break;
-			case EventType.Modify:
-				interpretation = Interpretation.Instance.EventInterpretation.ModifyEvent;
-				break;
-			}
-
-			Event ev = new Event ();
-
-			ev.Id = 0;
-			ev.Timestamp = DateTime.Now;
-			ev.Interpretation = interpretation;
-			ev.Manifestation = eventManifestation;
-			ev.Actor = MonoDevelopUri;
-
-			Subject sub = new Subject ();
-
-			sub.Uri = "file://" + doc.FileName.FullPath;
-			sub.Interpretation = subjectInterpretation;
-			sub.Manifestation = subjectManifestation;
-			sub.Origin = doc.FileName.FullPath.ParentDirectory;
-			sub.MimeType = DesktopService.GetMimeTypeForUri (doc.FileName.FullPath);
-			sub.Text = doc.FileName.FileName;
-			sub.Storage = string.Empty;
-
-			ev.Subjects.Add (sub);
-
-			List<Event> listOfEvents = new List<Event> ();
-			listOfEvents.Add (ev);
-
-			client.InsertEvents (listOfEvents); 
 		}
 
 		public void SendFilePath (FilePath filePath, EventType type)
 		{
 			var eventManifestation = Manifestation.Instance.EventManifestation.UserActivity;
-			var subjectInterpretation = Interpretation.Instance.Document.Document;
+			var subjectInterpretation = Interpretation.Instance.Document.TextDocument.PlainTextDocument.SourceCode;
 			var subjectManifestation = Manifestation.Instance.FileDataObject.FileDataObject;
 
 			var interpretation = Interpretation.Instance.EventInterpretation.ModifyEvent;

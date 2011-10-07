@@ -23,13 +23,13 @@ namespace MonoDevelop.Zeitgeist
 
 		void HandleDocSaved (object sender, EventArgs e)
 		{
-			MonoDevelop.Core.LoggingService.LogInfo ("== MonoDevelop.Zeitgeist : Saved {0}", Document.FileName.FileName);
+			MonoDevelop.Core.LoggingService.LogInfo ("Logging modify of {0} to Zeitgeist", Document.FileName.FileName);
 			client.SendFilePath (FilePath, EventType.Modify);
 		}
 
 		void HandleDocClosed (object sender, EventArgs e)
 		{
-			MonoDevelop.Core.LoggingService.LogInfo ("== MonoDevelop.Zeitgeist : Closed {0}", FilePath.FileName);
+			MonoDevelop.Core.LoggingService.LogInfo ("Logging leave of {0} to Zeitgeist", FilePath.FileName);
 			client.SendFilePath (FilePath, EventType.Leave);
 		}
 

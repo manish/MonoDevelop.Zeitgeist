@@ -24,8 +24,8 @@ namespace MonoDevelop.Zeitgeist
 		{
 			// TODO Log the project/solu opening/closing too
 			// TODO Log renamed & deleted files
-			// IDEA: Auto-close tabs that aren't being used
 			// TODO Don't log files as opened until they before active through usage when opening a project/solu
+			// IDEA: Auto-close tabs that aren't being used
 			Ide.IdeApp.Workbench.DocumentOpened += HandleDocumentOpened;
 		}
 
@@ -42,7 +42,7 @@ namespace MonoDevelop.Zeitgeist
 						documents.Remove (t);
 			};
 			documents.Add (tracked);
-			client.SendDocument (e.Document, EventType.Access);
+			client.SendFilePath (e.Document.FileName, EventType.Access);
 		}
 	}
 }
