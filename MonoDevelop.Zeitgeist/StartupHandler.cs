@@ -32,6 +32,7 @@ using MonoDevelop.Projects;
 using MonoDevelop.Ide.Gui;
 using System.Collections.Generic;
 using MonoDevelop.Core;
+using System.Linq;
 
 namespace MonoDevelop.Zeitgeist
 {
@@ -48,12 +49,28 @@ namespace MonoDevelop.Zeitgeist
 
 		protected override void Run ()
 		{
-			// TODO Log renamed & deleted files
+			// TODO Log deleted files
 			// TODO Don't log files as opened until they before active through usage when opening a project/solu
 			// IDEA: Auto-close tabs that aren't being used
 			Ide.IdeApp.Workbench.DocumentOpened += HandleDocumentOpened;
+			
+			MonoDevelop.Core.FileService.FileRenamed += HandleMonoDevelopCoreFileServiceFileRenamed;
+			
 			Ide.IdeApp.Workspace.SolutionLoaded += HandleIdeIdeAppWorkspaceSolutionLoaded;
 			Ide.IdeApp.Workspace.SolutionUnloaded += HandleIdeIdeAppWorkspaceSolutionUnloaded;
+		}
+
+		void HandleMonoDevelopCoreFileServiceFileRenamed (object sender, FileCopyEventArgs e)
+		{
+			foreach(FileCopyEventInfo evInfo in e.ToList())
+			{
+				if(!evInfo.IsDirectory)
+				{
+					MonoDevelop.Core.LoggingService.LogInfo ("Renamed {0} to {1}", 
+						evInfo.SourceFile.FileName, evInfo.TargetFile.FileName);
+					client.SendFilePath (evInfo.SourceFile, evInfo.TargetFile, EventType.Move);
+				}
+			}
 		}
 
 		void HandleIdeIdeAppWorkspaceSolutionUnloaded (object sender, SolutionEventArgs e)

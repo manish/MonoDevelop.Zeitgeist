@@ -41,6 +41,7 @@ namespace MonoDevelop.Zeitgeist
 		Access,
 		Modify,
 		Leave,
+		Move,
 	}
 
 	internal class ZeitgeistClient
@@ -78,8 +79,8 @@ namespace MonoDevelop.Zeitgeist
 				MonoDevelop.Core.LoggingService.LogError ("Error init", ex);
 			}
 		}
-
-		public void SendFilePath (FilePath filePath, EventType type)
+		
+		public void SendFilePath (FilePath oldPath, FilePath newPath, EventType type)
 		{
 			var eventManifestation = Manifestation.Instance.EventManifestation.UserActivity;
 			var subjectInterpretation = Interpretation.Instance.Document.TextDocument.PlainTextDocument.SourceCode;
@@ -96,6 +97,9 @@ namespace MonoDevelop.Zeitgeist
 			case EventType.Modify:
 				interpretation = Interpretation.Instance.EventInterpretation.ModifyEvent;
 				break;
+			case EventType.Move:
+				interpretation = Interpretation.Instance.EventInterpretation.MoveEvent;
+				break;
 			}
 
 			Event ev = new Event ();
@@ -108,12 +112,18 @@ namespace MonoDevelop.Zeitgeist
 
 			Subject sub = new Subject ();
 
-			sub.Uri = "file://" + filePath.FullPath;
+			sub.Uri = "file://" + oldPath.FullPath;
+			if(newPath != null)
+				sub.CurrentUri = "file://" + newPath.FullPath;
+			
 			sub.Interpretation = subjectInterpretation;
 			sub.Manifestation = subjectManifestation;
-			sub.Origin = filePath.FullPath.ParentDirectory;
-			sub.MimeType = DesktopService.GetMimeTypeForUri (filePath.FullPath);
-			sub.Text = filePath.FileName;
+			
+			FilePath path = newPath != null? newPath : oldPath;
+			MonoDevelop.Core.LoggingService.LogInfo ("File Opened: {0}", path.FullPath);
+			sub.Origin = path.FullPath.ParentDirectory;
+			sub.MimeType = DesktopService.GetMimeTypeForUri (path.FullPath);
+			sub.Text = path.FileName;
 			sub.Storage = string.Empty;
 
 			ev.Subjects.Add (sub);
@@ -122,6 +132,11 @@ namespace MonoDevelop.Zeitgeist
 			listOfEvents.Add (ev);
 
 			client.InsertEvents (listOfEvents);
+		}
+
+		public void SendFilePath (FilePath filePath, EventType type)
+		{
+			SendFilePath(filePath, null, type);
 		}
 	}
 }
