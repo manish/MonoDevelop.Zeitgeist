@@ -48,11 +48,24 @@ namespace MonoDevelop.Zeitgeist
 
 		protected override void Run ()
 		{
-			// TODO Log the project/solu opening/closing too
 			// TODO Log renamed & deleted files
 			// TODO Don't log files as opened until they before active through usage when opening a project/solu
 			// IDEA: Auto-close tabs that aren't being used
 			Ide.IdeApp.Workbench.DocumentOpened += HandleDocumentOpened;
+			Ide.IdeApp.Workspace.SolutionLoaded += HandleIdeIdeAppWorkspaceSolutionLoaded;
+			Ide.IdeApp.Workspace.SolutionUnloaded += HandleIdeIdeAppWorkspaceSolutionUnloaded;
+		}
+
+		void HandleIdeIdeAppWorkspaceSolutionUnloaded (object sender, SolutionEventArgs e)
+		{
+			MonoDevelop.Core.LoggingService.LogInfo ("Solution Unloaded: {0}", e.Solution.FileName.FileName);
+			client.SendFilePath (e.Solution.FileName, EventType.Leave);
+		}
+
+		void HandleIdeIdeAppWorkspaceSolutionLoaded (object sender, SolutionEventArgs e)
+		{
+			MonoDevelop.Core.LoggingService.LogInfo ("Solution Loaded: {0}", e.Solution.FileName.FileName);
+			client.SendFilePath (e.Solution.FileName, EventType.Access);
 		}
 
 		void HandleDocumentOpened (object sender, DocumentEventArgs e)
