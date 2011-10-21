@@ -3,8 +3,10 @@
 //
 //  Author:
 //       Patrick McEvoy <patrick@qmtech.net>
+//	 Manish Sinha <manishsinha@ubuntu.com>
 //
 //  Copyright (c) 2011 QMTech.
+//  Copyright (c) 2011 Manish Sinha <manishsinha@ubuntu.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
 // software and associated documentation files (the "Software"), to deal in the Software
@@ -42,6 +44,7 @@ namespace MonoDevelop.Zeitgeist
 		Modify,
 		Leave,
 		Move,
+		Delete,
 	}
 
 	internal class ZeitgeistClient
@@ -99,6 +102,9 @@ namespace MonoDevelop.Zeitgeist
 				break;
 			case EventType.Move:
 				interpretation = Interpretation.Instance.EventInterpretation.MoveEvent;
+				break;
+			case EventType.Delete:
+				interpretation = Interpretation.Instance.EventInterpretation.DeleteEvent;
 				break;
 			}
 

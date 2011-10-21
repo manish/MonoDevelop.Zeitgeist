@@ -3,8 +3,10 @@
 //
 //  Author:
 //       Patrick McEvoy <patrick@qmtech.net>
+//	 Manish Sinha <manishsinha@ubuntu.com>
 //
 //  Copyright (c) 2011 QMTech.
+//  Copyright (c) 2011 Manish Sinha <manishsinha@ubuntu.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this
 // software and associated documentation files (the "Software"), to deal in the Software
@@ -49,15 +51,28 @@ namespace MonoDevelop.Zeitgeist
 
 		protected override void Run ()
 		{
-			// TODO Log deleted files
 			// TODO Don't log files as opened until they before active through usage when opening a project/solu
 			// IDEA: Auto-close tabs that aren't being used
 			Ide.IdeApp.Workbench.DocumentOpened += HandleDocumentOpened;
 			
 			MonoDevelop.Core.FileService.FileRenamed += HandleMonoDevelopCoreFileServiceFileRenamed;
+			MonoDevelop.Core.FileService.FileRemoved += HandleMonoDevelopCoreFileServiceFileRemoved;
 			
 			Ide.IdeApp.Workspace.SolutionLoaded += HandleIdeIdeAppWorkspaceSolutionLoaded;
 			Ide.IdeApp.Workspace.SolutionUnloaded += HandleIdeIdeAppWorkspaceSolutionUnloaded;
+		}
+
+		void HandleMonoDevelopCoreFileServiceFileRemoved (object sender, FileEventArgs e)
+		{
+			foreach(var fileInfo in e.ToList())
+			{
+				if(!fileInfo.IsDirectory)
+				{
+					MonoDevelop.Core.LoggingService.LogInfo ("File {0} deleted", 
+						fileInfo.FileName.FileName);
+					client.SendFilePath (fileInfo.FileName, EventType.Delete);
+				}
+			}
 		}
 
 		void HandleMonoDevelopCoreFileServiceFileRenamed (object sender, FileCopyEventArgs e)

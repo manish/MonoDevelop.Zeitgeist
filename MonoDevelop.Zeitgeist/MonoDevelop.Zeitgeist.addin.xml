@@ -1,7 +1,7 @@
 <Addin id          = "Zeitgeist"
        namespace   = "MonoDevelop"
        name        = "Zeitgeist Support"
-       author      = "Patrick McEvoy"
+       author      = "Patrick McEvoy and Manish Sinha"
        copyright   = "MIT X11"
        url         = "http://github.com/firegrass/"
        description = "Log activity to Zeitgeist."
