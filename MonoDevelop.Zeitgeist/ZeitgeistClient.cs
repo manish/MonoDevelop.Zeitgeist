@@ -44,6 +44,7 @@ namespace MonoDevelop.Zeitgeist
 		Modify,
 		Leave,
 		Move,
+		Create,
 		Delete,
 	}
 
@@ -102,6 +103,9 @@ namespace MonoDevelop.Zeitgeist
 				break;
 			case EventType.Move:
 				interpretation = Interpretation.Instance.EventInterpretation.MoveEvent;
+				break;
+			case EventType.Create:
+				interpretation = Interpretation.Instance.EventInterpretation.CreateEvent;
 				break;
 			case EventType.Delete:
 				interpretation = Interpretation.Instance.EventInterpretation.DeleteEvent;

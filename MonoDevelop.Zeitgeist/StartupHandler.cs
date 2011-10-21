@@ -55,11 +55,25 @@ namespace MonoDevelop.Zeitgeist
 			// IDEA: Auto-close tabs that aren't being used
 			Ide.IdeApp.Workbench.DocumentOpened += HandleDocumentOpened;
 			
+			MonoDevelop.Core.FileService.FileCreated += HandleMonoDevelopCoreFileServiceFileCreated;
 			MonoDevelop.Core.FileService.FileRenamed += HandleMonoDevelopCoreFileServiceFileRenamed;
 			MonoDevelop.Core.FileService.FileRemoved += HandleMonoDevelopCoreFileServiceFileRemoved;
 			
 			Ide.IdeApp.Workspace.SolutionLoaded += HandleIdeIdeAppWorkspaceSolutionLoaded;
 			Ide.IdeApp.Workspace.SolutionUnloaded += HandleIdeIdeAppWorkspaceSolutionUnloaded;
+		}
+
+		void HandleMonoDevelopCoreFileServiceFileCreated (object sender, FileEventArgs e)
+		{
+			foreach(var fileInfo in e.ToList())
+			{
+				if(!fileInfo.IsDirectory)
+				{
+					MonoDevelop.Core.LoggingService.LogInfo ("File {0} created", 
+						fileInfo.FileName.FileName);
+					client.SendFilePath (fileInfo.FileName, EventType.Create);
+				}
+			}
 		}
 
 		void HandleMonoDevelopCoreFileServiceFileRemoved (object sender, FileEventArgs e)
